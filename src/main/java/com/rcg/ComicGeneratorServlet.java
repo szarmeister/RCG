@@ -1,7 +1,7 @@
 package com.rcg;
 
 import java.io.*;
-import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
@@ -17,8 +17,13 @@ public class ComicGeneratorServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        URL url = this.getClass().getResource("/images");
-        directoryFilesList = Arrays.asList(Objects.requireNonNull(new File(Objects.requireNonNull(url).getPath()).list()));
+        String imagesPath;
+        try {
+            imagesPath = getServletContext().getResource("/comic_images").getPath();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        directoryFilesList = Arrays.asList(Objects.requireNonNull(new File(imagesPath).list()));
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

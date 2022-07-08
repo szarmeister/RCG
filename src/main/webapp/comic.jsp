@@ -20,13 +20,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script>
+
+        window.onload = function checkInitialLockState() {
+            const elements = document.getElementsByTagName('i');
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].id.includes('image_lock_')) {
+                    if (elements[i].className === 'fa-solid fa-lock-open') {
+                        elements[i].style.color = '#c5b1ae';
+                    } else {
+                        elements[i].style.color = '#ff871b';
+                    }
+                }
+            }
+        }
+
         function lockImage(lockId, className) {
             const element = document.getElementById(lockId);
 
             if (className === 'fa-solid fa-lock-open') {
                 element.className = 'fa-solid fa-lock';
+                element.style.color = '#ff871b';
             } else {
                 element.className = 'fa-solid fa-lock-open';
+                element.style.color = '#c5b1ae';
             }
 
             const elements = document.getElementsByName(lockId);
@@ -35,6 +51,7 @@
                 console.log(element.value);
             });
         }
+
     </script>
 </head>
 <body>
@@ -59,15 +76,15 @@
             </tr>
             <tr class="image_row">
                 <td class="image">
-                    <img src="images/${empty image_1 ? '1.png' : image_1}" alt="Image is missing">
+                    <img src="comic_images/${empty image_1 ? '1.png' : image_1}" alt="Image is missing">
                     <input hidden name="image_1" value="${empty image_1 ? '1.png' : image_1}">
                 </td>
                 <td class="image">
-                    <img src="images/${empty image_2 ? '2.png' : image_2}" alt="Image is missing">
+                    <img src="comic_images/${empty image_2 ? '2.png' : image_2}" alt="Image is missing">
                     <input hidden name="image_2" value="${empty image_2 ? '2.png' : image_2}">
                 </td>
                 <td class="image">
-                    <img src="images/${empty image_3 ? '3.png' : image_3}" alt="Image is missing">
+                    <img src="comic_images/${empty image_3 ? '3.png' : image_3}" alt="Image is missing">
                     <input hidden name="image_3" value="${empty image_3 ? '3.png' : image_3}">
                 </td>
             </tr>

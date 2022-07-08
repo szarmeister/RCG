@@ -2,20 +2,25 @@ body {
     display: flex;
     flex-direction: column;
     height: 1080px;
-    width: 1980px;
+    width: 1920px;
     justify-content: center;
     align-items: center;
-    border: 2px double black;
+    background-image: url("../icons/background_image.png"), url("../icons/background_image2.png");
+    background-repeat: no-repeat, no-repeat;
+    background-size: 100% 50%, 100% 50%;
+    background-position: top left, bottom left;
 }
 
 .title {
     height: 100px;
     width: 1000px;
-    border: 2px double black;
+    border: 6px double black;
+    border-bottom: none;
     font-size: 64px;
     font-family: "Comic Sans MS", cursive;
     text-align: center;
     line-height: 100px;
+    background-color: white;
 }
 
 .main {
@@ -24,7 +29,9 @@ body {
     align-items: center;
     height: 600px;
     width: 1000px;
-    border: 2px double black;
+    border: 6px double black;
+    border-top: none;
+    background-color: white;
 }
 
 .comic_generator {
@@ -34,43 +41,44 @@ body {
 
 .lock_icon_row {
     display: flex;
-    flex-direction: row;
     height: 15%;
     width: 100%;
 }
 
 .lock_icon {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 4px;
     font-size: 60px;
     width: 100%;
+    color: #ff871b;
 }
 
 .image_row {
     display: flex;
-    flex-direction: row;
-    height: 75%;
+    height: 70%;
     width: 100%;
 }
 
 .image {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+    object-fit: contain;
     width: 100%;
 }
 
 .button_row {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding-top: 1%;
-    height: 9%;
+    height: 15%;
     width: 100%;
 }
 
 .button {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
 }
@@ -83,7 +91,7 @@ body {
     font-size: 20px;
     color: white;
     width: 30%;
-    height: 100%;
+    height: 50%;
     background-color: #406d3b;
     border: none;
     border-radius: 12px;
