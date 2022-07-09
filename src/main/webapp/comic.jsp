@@ -1,14 +1,6 @@
-<%--@elvariable id="image_3_lockStateClass" type="java.lang.String"--%>
-<%--@elvariable id="image_2_lockStateClass" type="java.lang.String"--%>
-<%--@elvariable id="image_1_lockStateClass" type="java.lang.String"--%>
+<%--@elvariable id="image_lockState" type="java.util.List<String>"--%>
+<%--@elvariable id="image" type="java.util.List<String>"--%>
 
-<%--@elvariable id="image_3_lockState" type="java.lang.String"--%>
-<%--@elvariable id="image_2_lockState" type="java.lang.String"--%>
-<%--@elvariable id="image_1_lockState" type="java.lang.String"--%>
-
-<%--@elvariable id="image_3" type="java.lang.String"--%>
-<%--@elvariable id="image_2" type="java.lang.String"--%>
-<%--@elvariable id="image_1" type="java.lang.String"--%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -34,9 +26,8 @@
             }
         }
 
-        function lockImage(lockId, className) {
+        function lockImage(lockId, className, containerId) {
             const element = document.getElementById(lockId);
-
             if (className === 'fa-solid fa-lock-open') {
                 element.className = 'fa-solid fa-lock';
                 element.style.color = '#ff871b';
@@ -45,11 +36,11 @@
                 element.style.color = '#c5b1ae';
             }
 
-            const elements = document.getElementsByName(lockId);
-            elements.forEach(element => {
-                element.value === 'no' ? element.value = 'yes' : element.value = 'no';
-                console.log(element.value);
-            });
+            const elements = document.getElementById(containerId).getElementsByTagName('input');
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].value === 'no' ? elements[i].value = 'yes' : elements[i].value = 'no';
+                console.log(elements[i].value);
+            }
         }
 
     </script>
@@ -61,31 +52,31 @@
     <form class="comic_generator" action="generate_comics" method="get">
         <table class="comic_generator">
             <tr class="lock_icon_row">
-                <td class="lock_icon">
-                    <i id="image_lock_1" class="${empty image_1_lockStateClass ? 'fa-solid fa-lock-open' : image_1_lockStateClass}" onclick="lockImage(this.id, this.className)"></i>
-                    <input hidden name="image_lock_1" value="${empty image_1_lockState ? 'no' : image_1_lockState}">
+                <td id="lock_icon_1" class="lock_icon">
+                    <i id="image_lock_1" class="${image_lockState.get(0) ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'}" onclick="lockImage(this.id, this.className, 'lock_icon_1')"></i>
+                    <input hidden name="image_lock" value="${image_lockState.get(0) ? 'yes' : 'no'}">
                 </td>
-                <td class="lock_icon">
-                    <i id="image_lock_2" class="${empty image_2_lockStateClass ? 'fa-solid fa-lock-open' : image_2_lockStateClass}" onclick="lockImage(this.id, this.className)"></i>
-                    <input hidden name="image_lock_2" value="${empty image_2_lockState ? 'no' : image_2_lockState}">
+                <td id="lock_icon_2" class="lock_icon">
+                    <i id="image_lock_2" class="${image_lockState.get(1) ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'}" onclick="lockImage(this.id, this.className, 'lock_icon_2')"></i>
+                    <input hidden name="image_lock" value="${image_lockState.get(1) ? 'yes' : 'no'}">
                 </td>
-                <td class="lock_icon">
-                    <i id="image_lock_3" class="${empty image_3_lockStateClass ? 'fa-solid fa-lock-open' : image_3_lockStateClass}" onclick="lockImage(this.id, this.className)"></i>
-                    <input hidden name="image_lock_3" value="${empty image_3_lockState ? 'no' : image_3_lockState}">
+                <td id="lock_icon_3" class="lock_icon">
+                    <i id="image_lock_3" class="${image_lockState.get(2) ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'}" onclick="lockImage(this.id, this.className, 'lock_icon_3')"></i>
+                    <input hidden name="image_lock" value="${image_lockState.get(2) ? 'yes' : 'no'}">
                 </td>
             </tr>
             <tr class="image_row">
                 <td class="image">
-                    <img src="comic_images/${empty image_1 ? '1.png' : image_1}" alt="Image is missing">
-                    <input hidden name="image_1" value="${empty image_1 ? '1.png' : image_1}">
+                    <img src="comic_images/${empty image.get(0) ? '1.png' : image.get(0)}" alt="Image is missing">
+                    <input hidden name="image" value="${empty image.get(0) ? '1.png' : image.get(0)}">
                 </td>
                 <td class="image">
-                    <img src="comic_images/${empty image_2 ? '2.png' : image_2}" alt="Image is missing">
-                    <input hidden name="image_2" value="${empty image_2 ? '2.png' : image_2}">
+                    <img src="comic_images/${empty image.get(1) ? '2.png' : image.get(1)}" alt="Image is missing">
+                    <input hidden name="image" value="${empty image.get(1) ? '2.png' : image.get(1)}">
                 </td>
                 <td class="image">
-                    <img src="comic_images/${empty image_3 ? '3.png' : image_3}" alt="Image is missing">
-                    <input hidden name="image_3" value="${empty image_3 ? '3.png' : image_3}">
+                    <img src="comic_images/${empty image.get(2) ? '3.png' : image.get(2)}" alt="Image is missing">
+                    <input hidden name="image" value="${empty image.get(2) ? '3.png' : image.get(2)}">
                 </td>
             </tr>
             <tr class="button_row">

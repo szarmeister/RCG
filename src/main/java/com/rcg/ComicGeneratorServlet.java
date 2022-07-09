@@ -3,7 +3,6 @@ package com.rcg;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -27,70 +26,60 @@ public class ComicGeneratorServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Boolean[] imageLockedState = new Boolean[3];
-        imageLockedState[0] = request.getParameter("image_lock_1").equals("yes");
-        imageLockedState[1] = request.getParameter("image_lock_2").equals("yes");
-        imageLockedState[2] = request.getParameter("image_lock_3").equals("yes");
+        List<Boolean> imagesLockedState = new ArrayList<>(convertStringToBoolean(request.getParameterValues("image_lock")));
+        List<String> images = new ArrayList<>(Arrays.asList(request.getParameterValues("image")));
 
-        String[] images = new String[3];
-        images[0] = request.getParameter("image_1");
-        images[1] = request.getParameter("image_2");
-        images[2] = request.getParameter("image_3");
+        List<String> lockedImages = new ArrayList<>();
 
-        List<String> filesList = new ArrayList<>(directoryFilesList);
-        filesList = filesList.stream().filter(file -> checkImage(file, images, imageLockedState)).collect(Collectors.toList());
+        for (int i = 0; i < images.size(); i++) {
+            if (imagesLockedState.get(i)) {
+                lockedImages.add(images.get(i));
+            }
+        }
 
-        List<String> randomImages = getNewImages(filesList, (int) Arrays.stream(imageLockedState)
-                .filter(element -> !element).count());
-
+        List<String> randomImages = getRandomImages(lockedImages, images.size() - lockedImages.size());
         List<String> newImages = new ArrayList<>();
 
-        for (int i = 0; i < imageLockedState.length; i++) {
-            if (imageLockedState[i]) {
-                newImages.add(images[i]);
+        for (int i = 0; i < images.size(); i++) {
+            if (imagesLockedState.get(i)) {
+                newImages.add(images.get(i));
             } else {
                 newImages.add(randomImages.get(0));
                 randomImages.remove(0);
             }
         }
 
-        String[] lockState = new String[3];
-        lockState[0] = imageLockedState[0] ? "fa-solid fa-lock" : "fa-solid fa-lock-open";
-        lockState[1] = imageLockedState[1] ? "fa-solid fa-lock" : "fa-solid fa-lock-open";
-        lockState[2] = imageLockedState[2] ? "fa-solid fa-lock" : "fa-solid fa-lock-open";
-
-        request.setAttribute("image_1", newImages.get(0));
-        request.setAttribute("image_2", newImages.get(1));
-        request.setAttribute("image_3", newImages.get(2));
-
-        request.setAttribute("image_1_lockStateClass", lockState[0]);
-        request.setAttribute("image_2_lockStateClass", lockState[1]);
-        request.setAttribute("image_3_lockStateClass", lockState[2]);
-
-        request.setAttribute("image_1_lockState", request.getParameter("image_lock_1"));
-        request.setAttribute("image_2_lockState", request.getParameter("image_lock_2"));
-        request.setAttribute("image_3_lockState", request.getParameter("image_lock_3"));
+        request.setAttribute("image", newImages);
+        request.setAttribute("image_lockState", imagesLockedState);
 
         RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/comic.jsp");
         requestDispatcher.forward(request, response);
     }
 
-    private boolean checkImage(String file, String[] images, Boolean[] imageLockedState) {
-        if(file.equals(images[0]) && imageLockedState[0]) {
-            return false;
-        } else if(file.equals(images[1]) && imageLockedState[1]) {
-            return false;
-        } else return !file.equals(images[2]) || !imageLockedState[2];
+    private List<Boolean> convertStringToBoolean(String[] stringArray) {
+        List<Boolean> booleanList = new ArrayList<>();
+
+        for (String string : stringArray) {
+            if (string.equals("yes")) {
+                booleanList.add(true);
+            } else {
+                booleanList.add(false);
+            }
+        }
+
+        return booleanList;
     }
 
-    private List<String> getNewImages(List<String> images, int numberOfElements) {
+    private List<String> getRandomImages(List<String> lockedImages, int numberOfElements) {
         Random random = new Random();
         List<String> randomImages = new ArrayList<>();
 
-        for (int i = 0; i < numberOfElements; i++) {
-            int randomIndex = random.nextInt(images.size());
-            randomImages.add(images.get(randomIndex));
-            images.remove(randomIndex);
+        while (randomImages.size() < numberOfElements) {
+            int randomIndex = random.nextInt(directoryFilesList.size());
+            String image = directoryFilesList.get(randomIndex);
+            if (!lockedImages.contains(image) && !randomImages.contains(image)) {
+                randomImages.add(image);
+            }
         }
 
         return randomImages;
